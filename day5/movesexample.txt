@@ -1,0 +1,4 @@
+move 1 from 2 to 1 cheese
+move 3 from 1 to 3 cheese
+move 2 from 2 to 1 cheese
+move 1 from 1 to 2 cheese
