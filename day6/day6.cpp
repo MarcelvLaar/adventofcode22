@@ -1,41 +1,18 @@
 #include <set>
-#include <iterator>
-#include <numeric>
-#include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
 using namespace std;
 
-int subroutine(vector<char> datastream){
-  cout << "starting subroutine\n";
-  for(int i=0; i<datastream.size()-3; i++){
+int subroutine(vector<char> datastream, int packetlength){
+  for(int i=0; i<datastream.size()-(packetlength-1); i++){
     set<char> s;
-    for (int j=0+i; j<4+i; j++){
-        s.insert(datastream[j]);
+    for (int j=0+i; j<packetlength+i; j++){ //put i+packet in a set
+      s.insert(datastream[j]);
     }
-    // cout << "s: " << datastream[i] << datastream[i+1] << datastream[i+2] << datastream[i+3] <<" (size " << s.size() <<")\n";
-
-    if (s.size() > 3){
-      return i + 4;
-    }
-  }
-  return 42069;
-}
-
-int subroutine2(vector<char> datastream){
-  cout << "starting subroutine2\n";
-  for(int i=0; i<datastream.size()-13; i++){
-    set<char> s;
-    for (int j=0+i; j<14+i; j++){
-        s.insert(datastream[j]);
-    }
-    // cout << "s: " << datastream[i] << datastream[i+1] << datastream[i+2] << datastream[i+3] <<" (size " << s.size() <<")\n";
-
-    if (s.size() > 13){
-      cout << "s.size: " << s.size() << "\n";
-      return i + 14;
+    if (s.size() > (packetlength-1)){ //check if that set if of size packetlength
+      return i + packetlength;
     }
   }
   return 42069;
@@ -48,16 +25,16 @@ vector<int> processdatastream(string filename){
   vector<int> returnvalue;
   fs.open(filename, ios::in);
   while(getline(fs, output, '\n')){
-    cout << "output: " << output << "\n";
     for (char c: output){
-        characters.push_back(c);
+      characters.push_back(c);
     }
   }
   fs.close();
-  returnvalue.push_back(subroutine(characters));
-  returnvalue.push_back(subroutine2(characters));
+  returnvalue.push_back(subroutine(characters, 4));
+  returnvalue.push_back(subroutine(characters, 14));
   return returnvalue;
 }
+
 int main(){
   string file;
   vector<int> pos;
